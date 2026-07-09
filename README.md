@@ -33,6 +33,9 @@ prd-eval-generator/
 │   └── report-template.md                # results report format (categories + failure buckets)
 └── examples/
     └── ai-site-migrator-example.md       # worked example (no silent content loss)
+
+dist/
+└── prd-eval-generator.skill              # packaged skill (zip) for claude.ai upload
 ```
 
 ## Install
@@ -43,6 +46,15 @@ The skill lives in the `prd-eval-generator/` folder. Copy that folder into one o
 - **Global (all your projects):** `~/.claude/skills/prd-eval-generator/`.
 
 Claude Code picks it up on the next session — no install command. Verify with `/skills`; you should see `prd-eval-generator` listed.
+
+### Claude.ai / Claude desktop
+
+Upload the packaged [`dist/prd-eval-generator.skill`](./dist/prd-eval-generator.skill) file (a zip of the skill folder) via **Settings → Capabilities → Skills**. To rebuild it after editing the skill, re-zip the folder so `prd-eval-generator/SKILL.md` is the top-level entry:
+
+```bash
+cd prd_eval_skill && zip -r dist/prd-eval-generator.skill prd-eval-generator \
+  -x "*/__pycache__/*" "*.pyc" "*.DS_Store"
+```
 
 ### Quick install from this repo
 
