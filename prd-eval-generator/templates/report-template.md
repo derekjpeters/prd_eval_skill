@@ -18,12 +18,28 @@ TODO: 2–3 sentences on overall health and whether this run should ship.
 | Pass rate | TODO% |
 | Release threshold | TODO% |
 
+## Per-category results
+
+Aggregate up, category down — read the breakdown, never just the topline. A fix can break something else; categories are the regression ratchet, and no category should ship below its previous score.
+
+| Category | Passed / Total | Previous run | Verdict |
+|---|---|---|---|
+| TODO | 0/0 | 0/0 | the fix, working / unaffected / regression — caught pre-ship |
+
 ## Hard failures
 
 List every case that triggered a hard-fail gate. Any hard failure blocks release.
 
 - **TODO-CASE-ID** — gate `TODO-GATE-ID`: TODO what happened.
 - _None_ if clean.
+
+## Failure buckets
+
+Group failures by root cause — labels come from reading the failing transcripts, not guessing. Five buckets, not fifteen. Fix the biggest bucket first; safety/trust buckets jump the queue (see `iteration-log-template.md` for the full loop).
+
+| Bucket | Count | Example case | First wrong step |
+|---|---|---|---|
+| TODO (e.g. wrong tool selected) | 0 | TODO-CASE-ID | TODO |
 
 ## Per-case results
 

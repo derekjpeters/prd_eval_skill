@@ -80,3 +80,9 @@ function migrationCasePassed(score: MigrationScore): boolean {
 - TODO: Exact definition of a "block" for inventory diffing (DOM node vs semantic unit)?
 - TODO: Are historical calendar/meeting entries in scope for preservation, or only current?
 - TODO: Threshold for "faithful" text on the judge dimension — paraphrase tolerated or verbatim required?
+
+## L–N. Maturing the suite (stage extensions)
+
+- **L. Coverage map (Stage 2).** Label the 15 cases — `labels.category`: content | links | assets | unsupported | structure; `labels.difficulty`: straightforward | edge_case — and track `passed/total` per cell. An empty `unsupported × edge_case` cell means the next case to write is a gnarly third-party-embed page, not another happy text page.
+- **M. Iteration playbook (Stages 3+).** The source-page snapshots already make every case a replay fixture — record once, score anytime. Pin the baseline (golden-set version + migrator build), read every failing page diff, bucket the failures (e.g. "table cells dropped", "flag missing on calendars"), fix the biggest bucket with one lever, re-run on the same pins, and ratchet: no category (links, assets, unsupported, …) ships below its previous score.
+- **N. User-signal intake.** Once real municipalities migrate pages: an editor hand-fixing a migrated page → new golden case from that source page; a complaint about flagged content → rubric case (which dimension failed?); an abandoned migration → replay fixture, read end to end. Each new case carries `source: user-session` or `production-signal`.

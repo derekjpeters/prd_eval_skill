@@ -61,6 +61,21 @@
       "description": "Map of scoring dimension -> weight (weights should sum to 1.0).",
       "additionalProperties": { "type": "number" }
     },
+    "labels": {
+      "type": "object",
+      "description": "Stage-2 coverage tags. Tags don't change how a case runs — they change what the results tell you (category × difficulty coverage map, per-category ratchet).",
+      "properties": {
+        "category": { "type": "string", "description": "Product-specific case category, e.g. a query or content type." },
+        "subcategory": { "type": "string" },
+        "difficulty": { "type": "string", "description": "e.g. 'straightforward' | 'ambiguous' | 'edge_case'." }
+      },
+      "additionalProperties": { "type": "string" }
+    },
+    "source": {
+      "type": "string",
+      "description": "Where the case came from: 'prd' | 'user-session' | 'production-signal' | 'synthetic'. Prefer real signal; note session/date for traceability.",
+      "examples": ["prd", "user-session 2026-06-28 · P2 abandoned after this", "production-signal", "synthetic"]
+    },
     "humanScore": {
       "type": ["number", "null"],
       "description": "Hand-assigned reference score in [0,1], null until labeled."

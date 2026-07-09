@@ -38,6 +38,8 @@ class GoldenCase:
     expected_artifacts: list[str] = field(default_factory=list)
     hard_fail_gates: list[HardFailGate] = field(default_factory=list)
     scoring_weights: dict[str, float] | None = None
+    labels: dict[str, str] | None = None
+    source: str | None = None
     human_score: float | None = None
     notes: str = ""
 
@@ -59,6 +61,8 @@ class GoldenCase:
                 for g in data.get("hardFailGates", [])
             ],
             scoring_weights=data.get("scoringWeights"),
+            labels=data.get("labels"),
+            source=data.get("source"),
             human_score=data.get("humanScore"),
             notes=data.get("notes", ""),
         )
@@ -121,12 +125,22 @@ class CaseResult:
 
 
 @dataclass
+class CategoryStats:
+    total: int = 0
+    passed: int = 0
+
+    def to_json(self) -> dict[str, Any]:
+        return {"total": self.total, "passed": self.passed}
+
+
+@dataclass
 class RunReport:
     total: int
     passed: int
     failed: int
     pass_rate: float
     hard_failures: list[str]
+    by_category: dict[str, CategoryStats]
     results: list[CaseResult]
     release_recommendation: Literal["SHIP", "BLOCK"]
 
@@ -137,6 +151,7 @@ class RunReport:
             "failed": self.failed,
             "passRate": self.pass_rate,
             "hardFailures": self.hard_failures,
+            "byCategory": {k: v.to_json() for k, v in self.by_category.items()},
             "results": [r.to_json() for r in self.results],
             "releaseRecommendation": self.release_recommendation,
         }
@@ -240,7 +255,19 @@ def run_case(golden_case: GoldenCase) -> CaseResult:
 
 
 def run_suite(cases: list[GoldenCase]) -> RunReport:
-    results: list[CaseResult] = [run_case(c) for c in cases]
+    results: list[CaseResult] = []
+    # Aggregate up, category down: the per-category breakdown is the regression
+    # ratchet — no category should ship below its previous score.
+    by_category: dict[str, CategoryStats] = {}
+    for c in cases:
+        result = run_case(c)
+        results.append(result)
+
+        category = (c.labels or {}).get("category", "uncategorized")
+        stats = by_category.setdefault(category, CategoryStats())
+        stats.total += 1
+        if result.passed:
+            stats.passed += 1
 
     passed = sum(1 for r in results if r.passed)
     hard_failures = [r.case_id for r in results if r.hard_fail_triggered]
@@ -256,6 +283,7 @@ def run_suite(cases: list[GoldenCase]) -> RunReport:
         failed=len(results) - passed,
         pass_rate=pass_rate,
         hard_failures=hard_failures,
+        by_category=by_category,
         results=results,
         release_recommendation=release_recommendation,
     )
@@ -280,6 +308,8 @@ def main() -> None:
         json.dump(report.to_json(), f, indent=2)
 
     print(f"Pass rate: {report.pass_rate * 100:.1f}%")
+    for category, stats in report.by_category.items():
+        print(f"  {category}: {stats.passed}/{stats.total}")
     print(f"Hard failures: {', '.join(report.hard_failures) or 'none'}")
     print(f"Release: {report.release_recommendation}")
 

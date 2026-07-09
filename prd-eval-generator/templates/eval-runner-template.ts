@@ -26,6 +26,8 @@ export interface GoldenCase {
   expectedArtifacts?: string[];
   hardFailGates?: HardFailGate[];
   scoringWeights?: Record<string, number>;
+  labels?: Record<string, string>;
+  source?: string;
   humanScore?: number | null;
   notes?: string;
 }
@@ -57,12 +59,18 @@ export interface CaseResult {
   notes: string;
 }
 
+export interface CategoryStats {
+  total: number;
+  passed: number;
+}
+
 export interface RunReport {
   total: number;
   passed: number;
   failed: number;
   passRate: number;
   hardFailures: string[];
+  byCategory: Record<string, CategoryStats>;
   results: CaseResult[];
   releaseRecommendation: "SHIP" | "BLOCK";
 }
@@ -166,8 +174,18 @@ export async function runCase(goldenCase: GoldenCase): Promise<CaseResult> {
 
 export async function runSuite(cases: GoldenCase[]): Promise<RunReport> {
   const results: CaseResult[] = [];
+  // Aggregate up, category down: the per-category breakdown is the regression
+  // ratchet — no category should ship below its previous score.
+  const byCategory: Record<string, CategoryStats> = {};
   for (const c of cases) {
-    results.push(await runCase(c));
+    const result = await runCase(c);
+    results.push(result);
+
+    const category = c.labels?.category ?? "uncategorized";
+    const stats = byCategory[category] ?? { total: 0, passed: 0 };
+    stats.total += 1;
+    if (result.passed) stats.passed += 1;
+    byCategory[category] = stats;
   }
 
   const passed = results.filter((r) => r.passed).length;
@@ -183,6 +201,7 @@ export async function runSuite(cases: GoldenCase[]): Promise<RunReport> {
     failed: results.length - passed,
     passRate,
     hardFailures,
+    byCategory,
     results,
     releaseRecommendation,
   };
@@ -207,6 +226,9 @@ async function main(): Promise<void> {
   await fs.writeFile("eval-report.json", JSON.stringify(report, null, 2));
 
   console.log(`Pass rate: ${(report.passRate * 100).toFixed(1)}%`);
+  for (const [category, stats] of Object.entries(report.byCategory)) {
+    console.log(`  ${category}: ${stats.passed}/${stats.total}`);
+  }
   console.log(`Hard failures: ${report.hardFailures.join(", ") || "none"}`);
   console.log(`Release: ${report.releaseRecommendation}`);
 

@@ -2,6 +2,8 @@
 
 Use this **only for subjective dimensions** that deterministic checks can't cover. Fill the `{{...}}` slots at runtime. The judge must return valid JSON and nothing else.
 
+**Calibrate before you trust the judge.** Hand-score ~20 real outputs against the rubric, run the judge on the same outputs, and compare (target correlation ≥ 0.8; also check hard-fail-gate agreement). If agreement is low, the rubric anchors are too vague — fix the rubric, then re-calibrate. Until calibrated, the judge advises; it does not gate.
+
 ---
 
 ## System / instruction

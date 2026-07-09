@@ -26,6 +26,12 @@
     "TODO_dimension_a": 0.5,
     "TODO_dimension_b": 0.5
   },
+  "labels": {
+    "category": "TODO: product-specific category",
+    "subcategory": "TODO: optional finer grouping",
+    "difficulty": "TODO: straightforward | ambiguous | edge_case"
+  },
+  "source": "TODO: prd | user-session | production-signal | synthetic",
   "humanScore": null,
   "notes": "TODO: rationale, calibration notes, or leave empty"
 }
