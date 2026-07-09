@@ -15,6 +15,7 @@ prd-eval-generator/
 │   ├── scoring-rubric-template.md        # weighted rubric + hard-fail gates
 │   ├── llm-judge-prompt-template.md      # judge prompt returning structured JSON
 │   ├── eval-runner-template.ts           # starter TypeScript runner
+│   ├── eval-runner-template.py           # starter Python runner
 │   └── report-template.md                # results report format
 └── examples/
     └── ai-site-migrator-example.md       # worked example (no silent content loss)

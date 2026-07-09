@@ -29,6 +29,7 @@ Trigger when a user provides a PRD (or points to one) and asks for evals, golden
 3. **Convert the contract into eval dimensions.**
 4. **Identify hard-fail gates** from safety/trust requirements.
 5. **Propose a golden-set sampling plan** covering happy paths, edge cases, deferred/unsupported content, and failure modes.
+   - *Concrete vs. parameterized:* when the PRD fixes the product's behavior, write concrete cases with real inputs and expected outputs, ready to score. When the behavior is chosen by the end user (e.g. a "pick your own behavior" assignment), the golden set is role-defined scaffolding — define each case's role, scenario shape, and pass criteria, and let the user instantiate the specifics once they've picked the behavior. State explicitly which mode the golden set is in.
 6. **Define the data** each golden example needs.
 7. **Create a weighted scoring rubric** plus hard-fail gates.
 8. **Generate deterministic checks** wherever possible.
@@ -41,8 +42,8 @@ Trigger when a user provides a PRD (or points to one) and asks for evals, golden
 
 Inspect the repo first. Reuse existing test/eval conventions, directory layout, and language. Do not introduce a new framework if one already exists.
 
-- TypeScript repo → TypeScript runner and interfaces (explicit types).
-- Python repo → Python runner.
+- TypeScript repo → TypeScript runner and interfaces (explicit types); start from `templates/eval-runner-template.ts`.
+- Python repo → Python runner; start from `templates/eval-runner-template.py`.
 - Uncertain → ask, or provide a brief version of both.
 - Prefer readable JSON, YAML, and Markdown plus small utilities. Ensure all generated JSON is valid.
 
@@ -57,8 +58,8 @@ Produce these sections in the response, in order:
 - **E. Scoring Rubric** — weighted sub-scores + hard-fail gates (see `templates/scoring-rubric-template.md`).
 - **F. Deterministic Checks** — assertions implementable without an LLM.
 - **G. LLM Judge Prompt** — for subjective checks only (see `templates/llm-judge-prompt-template.md`).
-- **H. Eval Runner Stub** — starter code in the repo's language (see `templates/eval-runner-template.ts`).
-- **I. Human Scoring Workflow** — how humans label the golden set and calibrate model/evaluator agreement.
+- **H. Eval Runner Stub** — starter code in the repo's language (see `templates/eval-runner-template.ts` for TypeScript projects, `templates/eval-runner-template.py` for Python projects).
+- **I. Human Scoring Workflow** — how humans label the golden set and calibrate model/evaluator agreement. If the PRD already describes a standing human-review or transcript-review cadence, map the eval's human scoring onto that existing process — same reviewers, same sessions — rather than proposing a parallel one.
 - **J. CI / Release Gate** — thresholds that block releases.
 - **K. Open Questions** — missing data the PRD does not specify, as `TODO`s.
 
@@ -70,7 +71,8 @@ Read these only when you reach the relevant step — don't load everything up fr
 - `templates/eval-case-template.json` — a filled generic case with TODO placeholders.
 - `templates/scoring-rubric-template.md` — reusable weighted rubric (section E).
 - `templates/llm-judge-prompt-template.md` — reusable judge prompt returning structured JSON (section G).
-- `templates/eval-runner-template.ts` — starter TypeScript runner (section H).
+- `templates/eval-runner-template.ts` — starter TypeScript runner (section H, TypeScript projects).
+- `templates/eval-runner-template.py` — starter Python runner (section H, Python projects).
 - `templates/report-template.md` — report format for results.
 - `examples/ai-site-migrator-example.md` — a concrete worked example (government site migration, no silent content loss).
 
