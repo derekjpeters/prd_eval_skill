@@ -1,0 +1,31 @@
+{
+  "id": "GC-001",
+  "name": "TODO: short label for this case",
+  "prdRequirementIds": ["TODO-REQ-ID"],
+  "scenario": "TODO: happy path | edge case | unsupported content | failure mode",
+  "userPersona": "TODO: who is acting here",
+  "input": {
+    "TODO": "product-specific input payload"
+  },
+  "expectedOutput": {
+    "TODO": "expected output or the properties it must satisfy"
+  },
+  "expectedFlags": [
+    "TODO: flags the system SHOULD raise, or [] if none"
+  ],
+  "expectedArtifacts": [
+    "TODO: files/documents/assets that must be present, or [] if none"
+  ],
+  "hardFailGates": [
+    {
+      "id": "TODO-GATE-ID",
+      "description": "TODO: binary condition that fails this case regardless of score"
+    }
+  ],
+  "scoringWeights": {
+    "TODO_dimension_a": 0.5,
+    "TODO_dimension_b": 0.5
+  },
+  "humanScore": null,
+  "notes": "TODO: rationale, calibration notes, or leave empty"
+}

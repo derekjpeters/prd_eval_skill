@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GoldenCase",
+  "description": "One hand-scored golden example derived from a PRD requirement.",
+  "type": "object",
+  "required": ["id", "name", "prdRequirementIds", "scenario", "input", "expectedOutput"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable unique identifier, e.g. 'GC-001'."
+    },
+    "name": {
+      "type": "string",
+      "description": "Short human-readable label for the case."
+    },
+    "prdRequirementIds": {
+      "type": "array",
+      "description": "IDs of the PRD requirements/metrics/guardrails this case traces to.",
+      "items": { "type": "string" }
+    },
+    "scenario": {
+      "type": "string",
+      "description": "What situation this case represents (happy path, edge case, unsupported content, failure mode)."
+    },
+    "userPersona": {
+      "type": "string",
+      "description": "Target user acting in this scenario, if relevant."
+    },
+    "input": {
+      "description": "The input given to the system under test. Shape is product-specific.",
+      "type": ["object", "string", "array"]
+    },
+    "expectedOutput": {
+      "description": "The expected output or the properties it must satisfy. May be exact or descriptive.",
+      "type": ["object", "string", "array"]
+    },
+    "expectedFlags": {
+      "type": "array",
+      "description": "Flags/warnings the system SHOULD raise (e.g. 'unsupported-form-preserved').",
+      "items": { "type": "string" }
+    },
+    "expectedArtifacts": {
+      "type": "array",
+      "description": "Files, documents, or assets that must be present in the output.",
+      "items": { "type": "string" }
+    },
+    "hardFailGates": {
+      "type": "array",
+      "description": "Binary conditions that fail the case regardless of score.",
+      "items": {
+        "type": "object",
+        "required": ["id", "description"],
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "scoringWeights": {
+      "type": "object",
+      "description": "Map of scoring dimension -> weight (weights should sum to 1.0).",
+      "additionalProperties": { "type": "number" }
+    },
+    "humanScore": {
+      "type": ["number", "null"],
+      "description": "Hand-assigned reference score in [0,1], null until labeled."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Reviewer notes, rationale, or calibration comments."
+    }
+  }
+}
